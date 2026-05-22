@@ -4,7 +4,7 @@ base-devel
 linux-zen
 linux-zen-headers
 linux-firmware
-archiso
+mkinitcpio-archiso
 grub
 efibootmgr
 syslinux
