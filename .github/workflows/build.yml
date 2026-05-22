@@ -1,0 +1,42 @@
+name: Build Arch Gaming ISO
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+    steps:
+      - name: Initialize Pacman Keys and Install Dependencies
+        run: |
+          # Initialize pacman keyring
+          pacman-key --init
+          pacman-key --populate archlinux
+          
+          # Update package database and install required tools
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm git archiso arch-install-scripts tar gzip
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build ISO
+        run: |
+          # Set executable permissions on build.sh just in case
+          chmod +x build.sh
+          # Run build script
+          ./build.sh
+
+      - name: Upload ISO Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Arch-Gaming-ISO
+          path: out/*.iso
+          if-no-files-found: error
+          retention-days: 7

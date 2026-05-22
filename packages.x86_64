@@ -1,0 +1,64 @@
+# --- SYSTEM BASE ---
+base
+base-devel
+linux-zen
+linux-zen-headers
+linux-firmware
+grub
+efibootmgr
+sudo
+nano
+vim
+git
+fastfetch
+arch-install-scripts
+
+# --- NETWORKING & BLUETOOTH ---
+networkmanager
+bluez
+bluez-utils
+wpa_supplicant
+
+# --- SOUND STEK (PIPEWIRE) ---
+pipewire
+pipewire-alsa
+pipewire-pulse
+pipewire-jack
+wireplumber
+
+# --- AMD DRIVERS (64-bit & 32-bit) ---
+xf86-video-amdgpu
+mesa
+lib32-mesa
+vulkan-radeon
+lib32-vulkan-radeon
+libva-mesa-driver
+lib32-libva-mesa-driver
+
+# --- GAMING TOOLS & COMPATIBILITY ---
+steam
+lutris
+heroic-games-launcher-bin
+wine-staging
+giflib
+lib32-giflib
+gnutls
+lib32-gnutls
+gamemode
+lib32-gamemode
+mangohud
+lib32-mangohud
+goverlay
+protonup-qt
+
+# --- KDE PLASMA & DISPLAY MANAGER ---
+plasma-desktop
+plasma-wayland-session
+sddm
+sddm-kcm
+konsole
+dolphin
+ark
+kvantum
+latte-dock
+xorg-server
