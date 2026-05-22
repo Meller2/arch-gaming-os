@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+cat > /etc/mkinitcpio.conf << 'MKINITCPIOEOF'
+MODULES=()
+BINARIES=()
+FILES=()
+HOOKS=(base udev microcode modconf kms memdisk archiso archiso_loop_mnt archiso_pxe_common archiso_pxe_nbd archiso_pxe_http archiso_pxe_nfs block filesystems keyboard)
+COMPRESSION="xz"
+COMPRESSION_OPTIONS=(-9e)
+MKINITCPIOEOF
+
+mkinitcpio -p linux-zen
