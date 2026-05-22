@@ -6,6 +6,7 @@ linux-zen-headers
 linux-firmware
 grub
 efibootmgr
+syslinux
 sudo
 nano
 vim

@@ -74,6 +74,26 @@ info "Configuring display manager symlink..."
 mkdir -p "${AIROOTFS_DIR}/etc/systemd/system"
 ln -sf "/usr/lib/systemd/system/sddm.service" "${AIROOTFS_DIR}/etc/systemd/system/display-manager.service"
 
+# Copy grub and syslinux bootloader configurations from the system profile if missing
+info "Checking bootloader configurations..."
+if [ ! -d "${SCRIPT_DIR}/grub" ]; then
+    if [ -d "/usr/share/archiso/configs/releng/grub" ]; then
+        info "Copying default GRUB configuration from system..."
+        cp -r "/usr/share/archiso/configs/releng/grub" "${SCRIPT_DIR}/"
+    else
+        warn "Default GRUB configuration not found in /usr/share/archiso/configs/releng/grub"
+    fi
+fi
+
+if [ ! -d "${SCRIPT_DIR}/syslinux" ]; then
+    if [ -d "/usr/share/archiso/configs/releng/syslinux" ]; then
+        info "Copying default Syslinux configuration from system..."
+        cp -r "/usr/share/archiso/configs/releng/syslinux" "${SCRIPT_DIR}/"
+    else
+        warn "Default Syslinux configuration not found in /usr/share/archiso/configs/releng/syslinux"
+    fi
+fi
+
 # Ensure correct permissions for critical files in airootfs
 info "Setting permissions on configuration files..."
 chmod 755 "${SCRIPT_DIR}/profiledef.sh"

@@ -21,7 +21,7 @@ jobs:
           
           # Update package database and install required tools
           pacman -Syu --noconfirm
-          pacman -S --noconfirm git archiso arch-install-scripts tar gzip
+          pacman -S --noconfirm git archiso arch-install-scripts tar gzip grub syslinux
 
       - name: Checkout Repository
         uses: actions/checkout@v4
