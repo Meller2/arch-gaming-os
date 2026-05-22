@@ -61,7 +61,7 @@ if ! pacman-key -l "fusi739@gmail.com" &>/dev/null && ! pacman-key -l "chaotic-a
     pacman-key --lsign-key 3056513887B78AEB
     
     info "Installing chaotic-keyring and chaotic-mirrorlist..."
-    pacman -Sy --noconfirm --needed \
+    pacman -U --noconfirm --needed \
         'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
         'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 else

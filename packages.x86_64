@@ -12,6 +12,8 @@ vim
 git
 fastfetch
 arch-install-scripts
+chaotic-keyring
+chaotic-mirrorlist
 
 # --- NETWORKING & BLUETOOTH ---
 networkmanager
