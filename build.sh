@@ -74,23 +74,14 @@ info "Configuring display manager symlink..."
 mkdir -p "${AIROOTFS_DIR}/etc/systemd/system"
 ln -sf "/usr/lib/systemd/system/sddm.service" "${AIROOTFS_DIR}/etc/systemd/system/display-manager.service"
 
-# Copy grub and syslinux bootloader configurations from the system profile if missing
-info "Checking bootloader configurations..."
-if [ ! -d "${SCRIPT_DIR}/grub" ]; then
-    if [ -d "/usr/share/archiso/configs/releng/grub" ]; then
-        info "Copying default GRUB configuration from system..."
-        cp -r "/usr/share/archiso/configs/releng/grub" "${SCRIPT_DIR}/"
+# Copy splash.png for syslinux if missing (config files are in-repo with linux-zen paths)
+info "Checking bootloader assets..."
+if [ ! -f "${SCRIPT_DIR}/syslinux/splash.png" ]; then
+    if [ -f "/usr/share/archiso/configs/releng/syslinux/splash.png" ]; then
+        info "Copying syslinux splash.png from system profile..."
+        cp "/usr/share/archiso/configs/releng/syslinux/splash.png" "${SCRIPT_DIR}/syslinux/"
     else
-        warn "Default GRUB configuration not found in /usr/share/archiso/configs/releng/grub"
-    fi
-fi
-
-if [ ! -d "${SCRIPT_DIR}/syslinux" ]; then
-    if [ -d "/usr/share/archiso/configs/releng/syslinux" ]; then
-        info "Copying default Syslinux configuration from system..."
-        cp -r "/usr/share/archiso/configs/releng/syslinux" "${SCRIPT_DIR}/"
-    else
-        warn "Default Syslinux configuration not found in /usr/share/archiso/configs/releng/syslinux"
+        warn "splash.png not found; syslinux will use text-only menu"
     fi
 fi
 
