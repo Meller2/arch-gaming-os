@@ -35,8 +35,6 @@ mesa
 lib32-mesa
 vulkan-radeon
 lib32-vulkan-radeon
-libva-mesa-driver
-lib32-libva-mesa-driver
 
 # --- GAMING TOOLS & COMPATIBILITY ---
 steam
@@ -56,12 +54,11 @@ protonup-qt
 
 # --- KDE PLASMA & DISPLAY MANAGER ---
 plasma-desktop
-plasma-wayland-session
+plasma-workspace
 sddm
 sddm-kcm
 konsole
 dolphin
 ark
 kvantum
-latte-dock
 xorg-server
