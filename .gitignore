@@ -1,0 +1,19 @@
+# Build artifacts
+work/
+out/
+*.iso
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Pacman cache
+var/cache/pacman/pkg/

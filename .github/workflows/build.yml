@@ -12,26 +12,32 @@ jobs:
     container:
       image: archlinux:latest
       options: --privileged
+
     steps:
-      - name: Initialize Pacman Keys and Install Dependencies
+      - name: Initialize Pacman and Install Dependencies
         run: |
-          # Initialize pacman keyring
           pacman-key --init
           pacman-key --populate archlinux
-          
-          # Update package database and install required tools
           pacman -Syu --noconfirm
-          pacman -S --noconfirm git archiso arch-install-scripts tar gzip grub syslinux
+          pacman -S --noconfirm \
+            git archiso arch-install-scripts tar gzip \
+            grub syslinux dos2unix
 
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Convert Line Endings to LF
+        run: |
+          find . -type f \( -name '*.sh' -o -name '*.conf' \
+            -o -name '*.jsonc' -o -name '*.json' \
+            -o -name '*.desktop' -o -name '*.cfg' \
+            -o -name '*.txt' -o -name '*.toml' \) \
+            -exec dos2unix {} +
+          chmod +x build.sh
+
       - name: Build ISO
         run: |
-          # Set executable permissions on build.sh just in case
-          chmod +x build.sh
-          # Run build script
-          ./build.sh
+          ./build.sh --clean
 
       - name: Upload ISO Artifact
         uses: actions/upload-artifact@v4
