@@ -17,4 +17,6 @@ echo "liveuser:liveuser" | chpasswd
 
 sed -i 's/^# %wheel ALL=(ALL:ALL) NOPASSWD: ALL/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/' /etc/sudoers
 
-systemctl enable sshd NetworkManager avahi-daemon
+systemctl enable sshd NetworkManager avahi-daemon bluetooth
+
+sudo -u liveuser xdg-user-dirs-update

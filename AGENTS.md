@@ -9,6 +9,17 @@ Custom Arch Linux gaming ISO (AMD-optimized, Hyprland Wayland compositor) built 
 - **CI**: push to `main` or `workflow_dispatch` — triggers `.github/workflows/build.yml`
 - **Skip CI**: include `[skip ci]` in commit message
 
+## Windows ↔ WSL Sync
+Dev environment is Windows + WSL2 Arch. The WSL project is at `/root/arch-gaming-os`. After editing files on the Windows side, sync to WSL before building or deploying:
+```
+wsl -d Arch -u root bash -c "cp -r /mnt/c/Users/Ilzat/Documents/'qwen 3.5'/Linux-distibution/* /root/arch-gaming-os/"
+```
+After editing in WSL, sync back:
+```
+wsl -d Arch -u root bash -c "cp /root/arch-gaming-os/<file> /mnt/c/Users/Ilzat/Documents/'qwen 3.5'/Linux-distibution/<file>"
+```
+**Git commits happen from the Windows working directory** — always verify the Windows-side files are current before committing.
+
 ## mkarchiso Execution Order (critical for understanding what gets overwritten)
 
 1. `_make_custom_airootfs` — copies `airootfs/` overlay into pacstrap dir (your files win here)
@@ -42,66 +53,66 @@ Every entry in `profiledef.sh` `file_permissions[]` must exist under `airootfs/`
 ### Chaotic-AUR: install keyring via `pacman -U <url>`, not `pacman -Sy`
 `pacman -Sy` only syncs DBs. `build.sh` uses `pacman -U` with direct URLs for `chaotic-keyring` and `chaotic-mirrorlist`. The `pacman.conf` just adds the `[chaotic-aur]` server entry.
 
-### PXE hooks removed from initramfs
-`archiso_pxe_common`, `archiso_pxe_nbd`, `archiso_pxe_http`, `archiso_pxe_nfs` are excluded because they require `ipconfig`, `nbd-client`, `nfsmount` which aren't installed. PXE boot is irrelevant for a gaming ISO.
-
 ### Obsolete packages
-- `libva-mesa-driver` / `lib32-libva-mesa-driver` → pulled as deps of `mesa`/`lib32-mesa`; explicit listing causes provider conflict prompts with Chaotic-AUR's `mesa-tkg-git`
+`libva-mesa-driver` / `lib32-libva-mesa-driver` → pulled as deps of `mesa`/`lib32-mesa`; explicit listing causes provider conflict prompts with Chaotic-AUR's `mesa-tkg-git`
 
-### Hyprland: use .conf format (Lua parser bug in 0.55)
-The Lua parser in Hyprland 0.55.2 cannot handle hyphenated identifiers like exec-once (treated as subtraction). Use traditional hyprland.conf format instead — fully functional, just shows a deprecation warning.
+### Wallpaper file missing at runtime
+`hyprpaper.conf` references `/usr/share/backgrounds/gaming-wallpaper.png` which is NOT shipped in the overlay. Hyprpaper will log errors but Hyprland still starts. Add the file to `airootfs/usr/share/backgrounds/` to fix.
 
-### Hyprland 0.53+: boolean flags require explicit values
-Strict typing requires values for boolean windowrule flags. Use `float 1`, `blur 1` — standalone `float`, `blur` without values cause `invalid field float: missing a value`.
+### Bootmodes: use current format
+`profiledef.sh` uses `('bios.syslinux' 'uefi.grub')`. Old formats like `bios.syslinux.mbr`, `uefi-x64.grub.esp` etc. are deprecated and mkarchiso converts them with warnings.
 
-### Hyprland 0.53+: matchers require `match:` prefix
-All window matching conditions must use `match:` prefix: `match:class ^(regex)$`, `match:title ^(regex)$`. Without it, `class:` or `title:` are parsed as unknown fields causing `invalid field class:^(...): missing a value`.
-Correct: `windowrule = float 1, match:class ^(pavucontrol)$`
-Wrong: `windowrule = float 1, class:^(pavucontrol)$`
+## Hyprland 0.53+ / 0.55+ Syntax
 
-### Hyprland 0.53+: properties renamed to snake_case
+### Use .conf format (Lua parser bug in 0.55)
+The Lua parser cannot handle hyphenated identifiers like `exec-once` (treated as subtraction). Use traditional hyprland.conf format — fully functional, just shows a deprecation warning.
+
+### Boolean flags require explicit values
+`float 1`, `blur on` — standalone `float`, `blur` cause `invalid field float: missing a value`.
+
+### Window matchers require `match:` prefix with SPACE separator
+- Correct: `windowrule = float 1, match:class ^(pavucontrol)$`
+- Wrong: `windowrule = float 1, class:^(pavucontrol)$` (no `match:`, colon instead of space)
+
+### Properties renamed to snake_case
 - `idleinhibit` → `idle_inhibit` (e.g. `windowrule = idle_inhibit focus, match:class ^(steam)$`)
-- `ignorezero` removed entirely → use `ignore_alpha` with value 0–1 (e.g. `layerrule = ignore_alpha 1, match:namespace wofi`)
+- `ignorezero` removed → use `ignore_alpha` with value 0–1
 
-### Hyprland 0.53+: layerrule requires match:namespace
-All layer rules now require the `match:namespace` prefix instead of bare layer names:
+### layerrule requires `match:namespace`
 - Correct: `layerrule = blur on, match:namespace wofi`
 - Correct: `layerrule = ignore_alpha 1, match:namespace wofi`
 - Wrong: `layerrule = blur 1, wofi`
 - Wrong: `layerrule = ignorezero 1, wofi`
 
-### Hyprland: SDDM must be ≥0.20.0
-Older SDDM has bug #1476 (90s shutdown with Wayland). Arch `extra` repo has the fixed version.
-
-### Hyprland: polkit agent required
-`hyprpolkitagent` must run at startup (`exec-once`) or GUI auth dialogs (e.g. partition manager) will hang. The package includes `/usr/lib/hyprpolkitagent/hyprpolkitagent`.
-
-### Hyprland: `xorg-xwayland` replaces `xorg-server`
-Wayland compositor needs `xorg-xwayland` for legacy X11 apps (Steam, Wine, Lutris). Do NOT install `xorg-server`.
-
-### Bootmodes: use current format
-`profiledef.sh` uses `('bios.syslinux' 'uefi.grub')`. Old formats like `bios.syslinux.mbr`, `uefi-x64.grub.esp` etc. are deprecated and mkarchiso converts them with warnings.
+### Other 0.55+ changes
+- `togglesplit` → `layoutmsg, togglesplit`
+- Removed: `vfr`, `no_direct_scanout`, `explicit_sync`, `dwindle` section, `gestures:workspace_swipe`
+- SDDM must be ≥0.20.0 (bug #1476: 90s shutdown with Wayland)
+- `hyprpolkitagent` must run at `exec-once` or GUI auth dialogs hang
+- `xorg-xwayland` replaces `xorg-server` — do NOT install `xorg-server`
 
 ## Live User
 - Account: `liveuser` (UID 1000), password: `liveuser`, groups: wheel, autologin, audio, video, optical, storage, games, power
 - Created in `customize_airootfs.sh` (not overlay passwd/shadow — those get overwritten by packages too, but mkarchiso reads them BEFORE pacstrap to copy `/etc/skel/` to user homes)
 - SDDM autologin: `airootfs/etc/sddm.conf.d/autologin.conf` → `liveuser` / `hyprland.desktop`
-- Wheel group has passwordless sudo (set in `customize_airootfs.sh`)
-- Passwordless sudo also via `/etc/sudoers.d/10-liveuser` (owned by root, mode 0440)
+- Wheel group has passwordless sudo (set in `customize_airootfs.sh` + `/etc/sudoers.d/10-liveuser` mode 0440)
 
-## Theming (current state)
-Dark cyberpunk aesthetic (purple/cyan/neon accents). Configs in `airootfs/etc/skel/.config/`:
-- `hypr/hyprland.conf` — WM behavior, keybinds, colors
-- `hypr/hyprpaper.conf` — wallpaper reference
-- `hypr/hyprlock.conf` — screen locker
-- `waybar/config.jsonc` + `style.css` — status bar
-- `wofi/config` + `style.css` — app launcher
-- `mako/config` — notifications
-- `kitty/kitty.conf` — terminal
-- `wlogout/layout` + `style.css` — power menu
-- `fastfetch/config.jsonc` — system info
-- `MangoHud/MangoHud.conf` — gaming overlay
-- To change: edit skel configs and/or add packages (GTK themes via `nwg-look`, Qt themes via `qt6ct`)
+## Live Debugging & mDNS (archgaming.local)
+The live system includes NetworkManager, `sshd`, and `avahi-daemon` (mDNS) enabled by default. Default password: `liveuser`.
+
+### Quick deploy without rebuilding ISO
+```
+sshpass -p 'liveuser' scp -o StrictHostKeyChecking=no airootfs/etc/skel/.config/hypr/hyprland.conf liveuser@172.16.115.128:~/.config/hypr/hyprland.conf
+sshpass -p 'liveuser' ssh -o StrictHostKeyChecking=no liveuser@172.16.115.128 'export HYPRLAND_INSTANCE_SIGNATURE=$(ls /run/user/1000/hypr/); hyprctl reload'
+```
+- `HYPRLAND_INSTANCE_SIGNATURE` is required over SSH — find it via `ls /run/user/1000/hypr/`
+- mDNS hostname: `liveuser@archgaming.local` (once avahi resolves on network)
+
+### VM graphics fix
+`.profile` auto-detects VMs via `systemd-detect-virt`. If vmware/oracle/qemu, exports `LIBGL_ALWAYS_SOFTWARE=1` and `WLR_NO_HARDWARE_CURSORS=1`. On real hardware these are not set, preserving gaming performance.
+
+### Root access on live ArchISO
+Root autologins on TTY3 (Ctrl+Alt+F3) with no password. Use this when SSH lacks sudo/pkexec (e.g., first-time setup on a fresh ISO).
 
 ## Known Build Failures & Fixes
 | Symptom | Root Cause | Fix |
@@ -122,23 +133,6 @@ Dark cyberpunk aesthetic (purple/cyan/neon accents). Configs in `airootfs/etc/sk
 | `invalid layerrule: wofi` | Layer rules need `match:namespace` | Use `layerrule = blur on, match:namespace wofi` |
 | Kitty crashes instantly in VMware | VMware GPU acceleration incompatible with Wayland | `LIBGL_ALWAYS_SOFTWARE=1` auto-set via `.profile` when `systemd-detect-virt` = vmware/oracle/qemu |
 
-## Hyprland 0.55+ Config Syntax Notes
-- **Window rules**: `windowrule = float 1, match:class:^(pavucontrol)$` — requires `match:` prefix and explicit boolean values
-- **Deprecated dispatchers**: `togglesplit` → use `layoutmsg, togglesplit`
-- **Removed options**: `vfr`, `no_direct_scanout`, `explicit_sync`, `dwindle` section, `gestures:workspace_swipe`
-- **`.conf` format still works**: All configs use traditional hyprland.conf syntax. Lua format is not yet viable due to parser bugs with hyphenated identifiers.
-
 ## Build Output
 - ISO appears in `out/` directory after successful build
 - CI uploads artifact named `Arch-Gaming-ISO` with 7-day retention
-
-## Live Debugging & mDNS (archgaming.local)
-- The live system includes NetworkManager, `sshd`, and `avahi-daemon` (mDNS) enabled by default
-- Default password for `liveuser` is `liveuser`
-- Thanks to Avahi mDNS, you don't need to look up the VM's IP. Access it from WSL by hostname: `liveuser@archgaming.local`
-- Deploy config changes from WSL on the fly:
-  ```
-  sshpass -p 'liveuser' scp -o StrictHostKeyChecking=no airootfs/etc/skel/.config/hypr/hyprland.conf liveuser@archgaming.local:~/.config/hypr/hyprland.conf
-  sshpass -p 'liveuser' ssh -o StrictHostKeyChecking=no liveuser@archgaming.local 'hyprctl reload'
-  ```
-- To prevent graphics crashes in virtual machines, `.profile` auto-detects the environment via `systemd-detect-virt`. If running inside a VM (vmware/oracle/qemu), it automatically exports `LIBGL_ALWAYS_SOFTWARE=1` and `WLR_NO_HARDWARE_CURSORS=1`. On real hardware these are not set, preserving gaming performance

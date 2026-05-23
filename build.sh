@@ -91,6 +91,16 @@ chmod 755 "${SCRIPT_DIR}/profiledef.sh"
 if [ -d "${AIROOTFS_DIR}/etc/skel" ]; then
     find "${AIROOTFS_DIR}/etc/skel" -type d -exec chmod 755 {} +
     find "${AIROOTFS_DIR}/etc/skel" -type f -exec chmod 644 {} +
+    chmod 755 "${AIROOTFS_DIR}/etc/skel/.local/bin/wallpaper-switch"
+fi
+
+# Copy wallpapers from images/ directory if available
+if [ -d "${SCRIPT_DIR}/images" ]; then
+    info "Copying wallpapers from images/ directory..."
+    mkdir -p "${AIROOTFS_DIR}/usr/share/backgrounds"
+    for img in "${SCRIPT_DIR}/images/"*.png; do
+        [ -f "$img" ] && cp "$img" "${AIROOTFS_DIR}/usr/share/backgrounds/"
+    done
 fi
 
 # 5. Execute build

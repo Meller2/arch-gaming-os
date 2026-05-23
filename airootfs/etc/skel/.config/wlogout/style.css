@@ -4,13 +4,14 @@
 
 window {
     background: rgba(16, 16, 20, 0.95);
-    border: 1px solid rgba(192, 132, 252, 0.3);
+    border: 1px solid rgba(245, 158, 11, 0.3);
     border-radius: 8px;
+    layer: overlay;
 }
 
 button {
     background: transparent;
-    border: 1px solid rgba(192, 132, 252, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.2);
     border-radius: 6px;
     color: #e0e0e0;
     margin: 4px;
@@ -19,14 +20,14 @@ button {
 
 button:focus,
 button:hover {
-    background: rgba(192, 132, 252, 0.2);
-    border-color: rgba(192, 132, 252, 0.6);
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.6);
     color: #ffffff;
 }
 
 #lock:hover {
-    color: #c084fc;
-    border-color: #c084fc;
+    color: #f59e0b;
+    border-color: #f59e0b;
 }
 
 #logout:hover {

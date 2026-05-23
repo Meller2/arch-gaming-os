@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+VIRT="$(systemd-detect-virt 2>/dev/null)"
+
+if [ "$VIRT" = "vmware" ] || [ "$VIRT" = "oracle" ] || [ "$VIRT" = "qemu" ] || [ "$VIRT" = "kvm" ]; then
+    export LIBGL_ALWAYS_SOFTWARE=1
+    export WLR_NO_HARDWARE_CURSORS=1
+fi
+
+exec "$@"

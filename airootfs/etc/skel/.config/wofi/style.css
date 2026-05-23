@@ -6,7 +6,7 @@
 window {
     margin: 0;
     background-color: rgba(16, 16, 20, 0.95);
-    border: 1px solid rgba(192, 132, 252, 0.4);
+    border: 1px solid rgba(245, 158, 11, 0.4);
     border-radius: 8px;
 }
 
@@ -22,17 +22,17 @@ window {
     margin: 6px;
     padding: 8px 12px;
     background: rgba(30, 30, 40, 0.8);
-    border: 1px solid rgba(192, 132, 252, 0.3);
+    border: 1px solid rgba(245, 158, 11, 0.3);
     border-radius: 6px;
     color: #e0e0e0;
 }
 
 #input:focus {
-    border-color: rgba(192, 132, 252, 0.8);
+    border-color: rgba(245, 158, 11, 0.8);
 }
 
 #input image {
-    color: #c084fc;
+    color: #f59e0b;
 }
 
 #entry {
@@ -44,14 +44,14 @@ window {
 }
 
 #entry:selected {
-    background: rgba(192, 132, 252, 0.25);
+    background: rgba(245, 158, 11, 0.25);
     color: #ffffff;
     outline: none;
 }
 
 #entry image {
     margin-right: 8px;
-    color: #c084fc;
+    color: #f59e0b;
 }
 
 #entry:selected image {

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+WALLPAPER_DIR="/usr/share/backgrounds"
+WALLPAPERS=(
+    "gaming-wallpaper.png"
+    "wallpaper-2.png"
+    "wallpaper-3.png"
+    "wallpaper-4.png"
+)
+STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/wallpaper-index"
+
+if [ ! -f "$STATE_FILE" ]; then
+    echo 0 > "$STATE_FILE"
+fi
+
+current=$(cat "$STATE_FILE")
+next=$(( (current + 1) % ${#WALLPAPERS[@]} ))
+wallpaper="${WALLPAPERS[$next]}"
+echo "$next" > "$STATE_FILE"
+
+printf 'preload = %s/%s\nwallpaper = ,%s/%s\nsplash = false\nipc = on\n' \
+    "$WALLPAPER_DIR" "$wallpaper" "$WALLPAPER_DIR" "$wallpaper" \
+    > ~/.config/hypr/hyprpaper.conf
+
+pkill hyprpaper 2>/dev/null
+sleep 0.5
+HYPRSIG=$(ls /run/user/$(id -u)/hypr/ 2>/dev/null | head -1)
+HYPRLAND_INSTANCE_SIGNATURE="$HYPRSIG" hyprctl dispatch exec hyprpaper
