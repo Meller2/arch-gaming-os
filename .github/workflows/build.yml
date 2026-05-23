@@ -31,7 +31,8 @@ jobs:
           find . -type f \( -name '*.sh' -o -name '*.conf' \
             -o -name '*.jsonc' -o -name '*.json' \
             -o -name '*.desktop' -o -name '*.cfg' \
-            -o -name '*.txt' -o -name '*.toml' \) \
+            -o -name '*.txt' -o -name '*.toml' \
+            -o -name '*.lua' -o -name '*.css' \) \
             -exec dos2unix {} +
           chmod +x build.sh
 

@@ -19,4 +19,5 @@ file_permissions=(
   ["/root/.gnupg"]="0:0:0700"
   ["/etc/polkit-1/rules.d"]="0:0:0750"
   ["/etc/sudoers.d"]="0:0:0750"
+  ["/etc/sudoers.d/10-liveuser"]="0:0:0440"
 )

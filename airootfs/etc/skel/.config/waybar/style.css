@@ -1,0 +1,144 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Noto Sans", "Font Awesome 6 Free", sans-serif;
+    font-size: 12px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(16, 16, 20, 0.92);
+    border-bottom: 1px solid rgba(192, 132, 252, 0.3);
+    color: #e0e0e0;
+    border-radius: 0;
+}
+
+#workspaces {
+    margin: 3px;
+    padding: 0 5px;
+}
+
+#workspaces button {
+    padding: 2px 6px;
+    color: #888888;
+    background: transparent;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+#workspaces button:hover {
+    background: rgba(192, 132, 252, 0.15);
+    color: #c084fc;
+    border: none;
+    box-shadow: none;
+}
+
+#workspaces button.active {
+    color: #c084fc;
+    background: rgba(192, 132, 252, 0.2);
+    font-weight: bold;
+}
+
+#workspaces button.urgent {
+    color: #ff3333;
+    background: rgba(255, 51, 51, 0.2);
+}
+
+#clock,
+#cpu,
+#memory,
+#battery,
+#network,
+#bluetooth,
+#pulseaudio,
+#tray {
+    padding: 0 8px;
+    margin: 2px 2px;
+    border-radius: 4px;
+}
+
+#clock {
+    color: #c084fc;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+#cpu {
+    color: #a78bfa;
+}
+
+#memory {
+    color: #818cf8;
+}
+
+#network {
+    color: #34d399;
+}
+
+#network.disconnected {
+    color: #ff3333;
+}
+
+#bluetooth {
+    color: #60a5fa;
+}
+
+#pulseaudio {
+    color: #f472b6;
+}
+
+#pulseaudio.muted {
+    color: #ff3333;
+}
+
+#battery {
+    color: #22d3ee;
+}
+
+#battery.charging {
+    color: #34d399;
+}
+
+#battery.warning {
+    color: #fbbf24;
+}
+
+#battery.critical {
+    color: #ff3333;
+    background: rgba(255, 51, 51, 0.2);
+}
+
+#tray {
+    padding: 0 6px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background: rgba(255, 204, 0, 0.2);
+    border-radius: 4px;
+}
+
+#custom-power {
+    padding: 0 10px;
+    color: #c084fc;
+    font-size: 14px;
+}
+
+tooltip {
+    background: rgba(16, 16, 20, 0.95);
+    border: 1px solid rgba(192, 132, 252, 0.3);
+    border-radius: 6px;
+}
+
+tooltip label {
+    color: #e0e0e0;
+    padding: 4px 8px;
+}
+
+label:focus {
+    background: transparent;
+}

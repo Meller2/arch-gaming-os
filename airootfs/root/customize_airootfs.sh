@@ -11,10 +11,10 @@ MKINITCPIOEOF
 
 mkinitcpio -p linux-zen
 
-useradd -m -G wheel,autologin,audio,video,optical,storage,games,power -s /usr/bin/bash liveuser
-passwd -d liveuser
-
 groupadd -r autologin
-gpasswd -a liveuser autologin
+useradd -m -G wheel,autologin,audio,video,optical,storage,games,power -s /usr/bin/bash liveuser
+echo "liveuser:liveuser" | chpasswd
 
 sed -i 's/^# %wheel ALL=(ALL:ALL) NOPASSWD: ALL/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/' /etc/sudoers
+
+systemctl enable sshd NetworkManager avahi-daemon

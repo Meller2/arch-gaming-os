@@ -1,12 +1,12 @@
 # Arch Gaming OS
 
-A custom Arch Linux live ISO optimized for AMD gaming, built with KDE Plasma and styled like Garuda Linux. Automated via GitHub Actions.
+A custom Arch Linux live ISO optimized for AMD gaming, built with the Hyprland Wayland compositor. Automated via GitHub Actions.
 
 ## Features
 
 - **Linux-zen kernel** — low-latency, gaming-optimized
 - **AMD-optimized drivers** — Vulkan, Mesa (64-bit + 32-bit)
-- **KDE Plasma desktop** — with SDDM, Kvantum, Breeze
+- **Hyprland Wayland compositor** — with SDDM, Waybar, wofi, mako, kitty
 - **Gaming tools** — Steam, Lutris, Heroic Games Launcher, Wine, Protonup-qt
 - **Performance overlays** — MangoHud, GameMode, GOverlay
 - **Chaotic-AUR** — prebuilt packages (heroic-games-launcher-bin, etc.)
@@ -62,7 +62,7 @@ Every push to `main` triggers a GitHub Actions build using `archlinux:latest` in
     │   ├── locale.conf
     │   ├── passwd / shadow       # liveuser account
     │   ├── sddm.conf.d/          # Autologin config
-    │   ├── skel/.config/         # User configs (KDE, MangoHud, fastfetch)
+    │   ├── skel/.config/         # User configs (Hyprland, waybar, wofi, MangoHud, fastfetch)
     │   ├── polkit-1/rules.d/
     │   └── sudoers.d/
     └── root/
@@ -77,9 +77,9 @@ Every push to `main` triggers a GitHub Actions build using `archlinux:latest` in
 ## Live User
 
 The ISO boots into a `liveuser` account (no password) with:
-- Autologin via SDDM into KDE Plasma
+- Autologin via SDDM into Hyprland
 - Passwordless sudo (wheel group)
-- Preconfigured MangoHud, Fastfetch, KDE desktop layout
+- Preconfigured Hyprland desktop, Waybar panel, wofi launcher, MangoHud, Fastfetch
 
 ## License
 

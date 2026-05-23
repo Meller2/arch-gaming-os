@@ -22,6 +22,9 @@ networkmanager
 bluez
 bluez-utils
 wpa_supplicant
+avahi
+nss-mdns
+openssh
 
 # --- SOUND STEK (PIPEWIRE) ---
 pipewire
@@ -53,13 +56,49 @@ lib32-mangohud
 goverlay
 protonup-qt
 
-# --- KDE PLASMA & DISPLAY MANAGER ---
-plasma-desktop
-plasma-workspace
+# --- HYPRLAND (WAYLAND COMPOSITOR) ---
+hyprland
+hyprpaper
+hyprlock
+hypridle
+hyprpolkitagent
+xorg-xwayland
+
+# --- STATUS BAR & LAUNCHERS ---
+waybar
+wofi
+
+# --- NOTIFICATIONS ---
+mako
+
+# --- TERMINAL ---
+kitty
+
+# --- SCREENSHOTS ---
+grim
+slurp
+swappy
+
+# --- CLIPBOARD ---
+wl-clipboard
+cliphist
+
+# --- LOGOUT MENU ---
+wlogout
+
+# --- PORTALS ---
+xdg-desktop-portal-hyprland
+
+# --- THEME SETTINGS ---
+qt6ct
+nwg-look
+
+# --- DISPLAY MANAGER ---
 sddm
-sddm-kcm
-konsole
-dolphin
-ark
-kvantum
-xorg-server
+
+# --- SYSTEM TRAY APPLETS ---
+network-manager-applet
+blueman
+pavucontrol
+brightnessctl
+playerctl

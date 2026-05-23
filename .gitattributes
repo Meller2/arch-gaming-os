@@ -15,6 +15,8 @@
 *.toml text eol=lf
 *.xml text eol=lf
 *.py text eol=lf
+*.lua text eol=lf
+*.css text eol=lf
 *.gitkeep text eol=lf
 
 # Binary files - don't touch

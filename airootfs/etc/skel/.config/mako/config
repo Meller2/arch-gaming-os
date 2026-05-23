@@ -1,0 +1,14 @@
+max-visible=8
+default-timeout=5000
+sort=+time
+layer=overlay
+font="Noto Sans" 12
+background-color=rgba(16, 16, 20, 0.92)
+text-color=#e0e0e0
+border-color=rgba(192, 132, 252, 0.3)
+border-radius=6
+width=360
+height=200
+margin=12,24,12,24
+padding=10,16
+anchor=top-right
