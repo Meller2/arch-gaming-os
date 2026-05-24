@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+#
+# wallpaper-switch — cycle through the wallpapers shipped with Arch Gaming OS.
+#
+# Bound to SUPER+SHIFT+W in hyprland.conf. Rewrites ~/.config/hypr/hyprpaper.conf
+# with the next wallpaper in the list and restarts hyprpaper.
+
+set -euo pipefail
 
 WALLPAPER_DIR="/usr/share/backgrounds"
 WALLPAPERS=(
@@ -7,22 +14,46 @@ WALLPAPERS=(
     "wallpaper-3.png"
     "wallpaper-4.png"
 )
-STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/wallpaper-index"
 
-if [ ! -f "$STATE_FILE" ]; then
-    echo 0 > "$STATE_FILE"
+STATE_DIR="${XDG_STATE_HOME:-${HOME}/.local/state}"
+STATE_FILE="${STATE_DIR}/wallpaper-index"
+HYPR_CONF="${HOME}/.config/hypr/hyprpaper.conf"
+
+mkdir -p "${STATE_DIR}" "$(dirname "${HYPR_CONF}")"
+
+current=0
+if [[ -r "${STATE_FILE}" ]]; then
+    current=$(<"${STATE_FILE}")
+    # Guard against a corrupted state file.
+    [[ "${current}" =~ ^[0-9]+$ ]] || current=0
 fi
 
-current=$(cat "$STATE_FILE")
 next=$(( (current + 1) % ${#WALLPAPERS[@]} ))
-wallpaper="${WALLPAPERS[$next]}"
-echo "$next" > "$STATE_FILE"
+wallpaper="${WALLPAPERS[${next}]}"
+printf '%s\n' "${next}" > "${STATE_FILE}"
 
-printf 'preload = %s/%s\nwallpaper = ,%s/%s\nsplash = false\nipc = on\n' \
-    "$WALLPAPER_DIR" "$wallpaper" "$WALLPAPER_DIR" "$wallpaper" \
-    > ~/.config/hypr/hyprpaper.conf
+cat > "${HYPR_CONF}" <<EOF
+preload = ${WALLPAPER_DIR}/${wallpaper}
+wallpaper = ,${WALLPAPER_DIR}/${wallpaper}
+splash = false
+ipc = on
+EOF
 
-pkill hyprpaper 2>/dev/null
-sleep 0.5
-HYPRSIG=$(ls /run/user/$(id -u)/hypr/ 2>/dev/null | head -1)
-HYPRLAND_INSTANCE_SIGNATURE="$HYPRSIG" hyprctl dispatch exec hyprpaper
+# Restart hyprpaper. Find the active Hyprland instance signature so this works
+# when invoked from outside the session (e.g. over SSH).
+pkill -x hyprpaper >/dev/null 2>&1 || true
+sleep 0.3
+
+runtime_dir="/run/user/$(id -u)/hypr"
+if [[ -d "${runtime_dir}" ]]; then
+    # Pick the most recently modified instance directory.
+    hyprsig=$(find "${runtime_dir}" -mindepth 1 -maxdepth 1 -type d \
+        -printf '%T@ %f\n' 2>/dev/null | sort -nr | head -n1 | cut -d' ' -f2-)
+    if [[ -n "${hyprsig}" ]]; then
+        HYPRLAND_INSTANCE_SIGNATURE="${hyprsig}" hyprctl dispatch exec hyprpaper >/dev/null
+        exit 0
+    fi
+fi
+
+# Fallback: launch detached.
+nohup hyprpaper >/dev/null 2>&1 &
